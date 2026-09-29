@@ -234,6 +234,7 @@ Các bước chi tiết nằm trong `.claude/skills/<tên>/SKILL.md` (đọc tr�
 | **3. Skills** | 4 skill trong `.claude/skills/` | Chạy thử `/new-course` → `/today` → `/done` trọn một vòng |
 | **4. Deploy** | Workflow + hướng dẫn bật Pages | Push lên là web app tự cập nhật |
 | **5. Khoá thật** | Chạy `/new-course` cho khoá đầu tiên | Có lộ trình và bài ngày 1 |
+| **6. Hardening** | Chuyển sổ sách sang `scripts/lib/` + `scripts/*.mjs` (Claude chỉ viết nội dung), sửa audit item của 4 skill cũ, thêm `/synthesize-syllabus` `/status` `/ask`, schema 5.5 (`course.json` mở rộng), `config.json` gom tên nhánh | Unit test (`npm test`) pass, test end-to-end `/synthesize-syllabus → /new-course → /today → /done (kể cả dán trùng) → /review` trên khoá throwaway chạy đúng, đã xoá dữ liệu test |
 
 Sau mỗi giai đoạn: dừng lại, tóm tắt cho người dùng, chờ đồng ý rồi mới làm tiếp.
 
