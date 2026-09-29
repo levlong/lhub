@@ -1,0 +1,35 @@
+{
+  "course": "sample",
+  "day": 1,
+  "date": "2026-09-29",
+  "title": "Sample Concept A & B",
+  "chapter": "1. Sample Chapter",
+  "syllabus_refs": ["SAMPLE-1.1", "SAMPLE-1.2"],
+  "concepts": ["sample-concept-a", "sample-concept-b"],
+  "est_minutes": 15,
+  "sections": [
+    { "type": "text", "heading": "Ý chính", "body_md": "Đây là bài mẫu để kiểm tra pipeline dựng dữ liệu, không phải nội dung học thật." },
+    { "type": "example", "heading": "Ví dụ", "body_md": "Ví dụ giả: A và B là hai khái niệm mẫu, không liên quan tới khoá học thật." },
+    { "type": "compare", "heading": "Dễ nhầm", "items": [
+      { "wrong": "Nhầm A với B", "right": "A và B là hai khái niệm khác nhau", "why": "Đây là giải thích mẫu." }
+    ] }
+  ],
+  "quiz": [
+    {
+      "id": "sample-d01-q1",
+      "concept": "sample-concept-a",
+      "prompt": "Concept A là gì?",
+      "options": ["Khái niệm mẫu A", "Khái niệm mẫu B", "Không phải khái niệm nào cả"],
+      "why": "Đây là câu hỏi mẫu để test build pipeline.",
+      "ref": "SAMPLE-1.1"
+    },
+    {
+      "id": "sample-d01-q2",
+      "concept": "sample-concept-b",
+      "prompt": "Concept B khác Concept A ở điểm nào?",
+      "options": ["B là một khái niệm mẫu khác, tách biệt với A", "B giống hệt A", "B không tồn tại"],
+      "why": "Đây là câu hỏi mẫu để test build pipeline.",
+      "ref": "SAMPLE-1.2"
+    }
+  ]
+}
