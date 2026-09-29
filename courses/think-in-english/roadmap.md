@@ -9,7 +9,7 @@ days_per_week: 6
 | Ngày | Chương | Chủ đề | Mã syllabus | Khái niệm | Trạng thái |
 |---|---|---|---|---|---|
 | 1 | 1. Giới từ | Giới từ: thừa và thiếu | TIE-1 | prepositions-transfer-errors | done |
-| 2 | 2. Collocation | Collocation: từ nào đi với từ nào | TIE-2 | collocations | todo |
+| 2 | 2. Collocation | Collocation: từ nào đi với từ nào | TIE-2 | collocations | done |
 | 3 | 3. Cấu trúc câu | Cấu trúc câu: đừng xếp theo tiếng Việt | TIE-3 | sentence-structure-interference | todo |
 | 4 | 4. Thì | Thì: để động từ tự mang thời gian | TIE-4 | tense-marking | todo |
 | 5 | 5. Phản xạ giao tiếp | Phản xạ giao tiếp: trả lời như người bản xứ | TIE-5 | communication-reflexes | todo |
