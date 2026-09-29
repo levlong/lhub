@@ -63,6 +63,28 @@ function requireFields(obj, fields, label) {
   }
 }
 
+function splitList(cell) {
+  return cell.split(",").map((s) => s.trim()).filter(Boolean);
+}
+
+// Parses the "Ngày | Chương | Chủ đề | Mã syllabus | Khái niệm | Trạng thái" table (schema 5.4).
+function parseRoadmap(content, file) {
+  const label = path.relative(ROOT, file);
+  const { body } = parseFrontmatter(content, file);
+  const rows = body.split(/\r?\n/).filter((l) => l.trim().startsWith("|"));
+  if (rows.length < 2) fail(`Không tìm thấy bảng roadmap trong ${label}`);
+  const header = rows[0].split("|").map((c) => c.trim()).filter(Boolean);
+  const expected = ["Ngày", "Chương", "Chủ đề", "Mã syllabus", "Khái niệm", "Trạng thái"];
+  if (expected.some((h, i) => header[i] !== h)) fail(`Header bảng roadmap không đúng trong ${label} (cần: ${expected.join(" | ")})`);
+
+  return rows.slice(2).map((line) => {
+    const cells = line.split("|").map((c) => c.trim()).filter((_, i, a) => !(i === 0 && a[0] === "") && !(i === a.length - 1 && a[a.length - 1] === ""));
+    const [day, chapter, topic, syllabus_refs, concepts, status] = cells;
+    if (!["todo", "done", "review"].includes(status)) fail(`Trạng thái "${status}" không hợp lệ trong ${label} (chỉ nhận todo/done/review)`);
+    return { day: /^\d+$/.test(day) ? Number(day) : day, chapter, topic, syllabus_refs: splitList(syllabus_refs), concepts: splitList(concepts), status };
+  });
+}
+
 function extractWikilinks(body) {
   const links = new Set();
   for (const m of body.matchAll(/\[\[([a-z0-9-]+)\]\]/g)) links.add(m[1]);
@@ -115,6 +137,10 @@ function buildCourses(knowledgeIds) {
     requireFields(course, ["id", "title", "start_date", "minutes_per_day", "days_per_week"], `courses/${id}/course.json`);
     if (course.id !== id) fail(`course.id "${course.id}" không khớp tên thư mục courses/${id}`);
 
+    const roadmapFile = path.join(courseDir, "roadmap.md");
+    const roadmap = existsSync(roadmapFile) ? parseRoadmap(readFileSync(roadmapFile, "utf8"), roadmapFile) : [];
+    const statusByDay = new Map(roadmap.map((r) => [r.day, r.status]));
+
     const daysDir = path.join(courseDir, "days");
     const dayFiles = existsSync(daysDir) ? readdirSync(daysDir).filter((f) => f.endsWith(".json")).sort() : [];
     const outDir = path.join(SITE_DATA_DIR, id);
@@ -130,10 +156,10 @@ function buildCourses(knowledgeIds) {
         if (!knowledgeIds.has(c)) fail(`concept "${c}" trong ${path.relative(ROOT, file)} không có note trong knowledge/`);
       }
       writeFileSync(path.join(outDir, f), JSON.stringify(day, null, 2));
-      days.push({ day: day.day, date: day.date, title: day.title, est_minutes: day.est_minutes });
+      days.push({ day: day.day, file: f, date: day.date, title: day.title, est_minutes: day.est_minutes, status: statusByDay.get(day.day) ?? "todo" });
     }
 
-    courses.push({ ...course, days });
+    courses.push({ ...course, roadmap, days });
   }
 
   return courses.sort((a, b) => a.id.localeCompare(b.id));

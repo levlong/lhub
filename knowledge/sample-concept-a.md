@@ -3,11 +3,11 @@ id: sample-concept-a
 title: Sample Concept A
 courses: [sample]
 source: sources/sample/syllabus.md#SAMPLE-1.1
-status: new
-learned: null
-next_review: null
-interval: 1
-mistakes: 0
+status: learning
+learned: 2026-09-29
+next_review: 2026-09-28
+interval: 3
+mistakes: 1
 tags: [sample]
 ---
 # Sample Concept A

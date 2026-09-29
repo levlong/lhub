@@ -14,3 +14,4 @@ accessed: 2026-09-29
 
 - **SAMPLE-1.1** — Concept A: giải thích được khái niệm mẫu A.
 - **SAMPLE-1.2** — Concept B: giải thích được khái niệm mẫu B và phân biệt được với A.
+- **SAMPLE-2.1** — Concept C: giải thích được khái niệm mẫu C.
