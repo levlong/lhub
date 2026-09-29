@@ -1,0 +1,72 @@
+{
+  "course": "think-in-english",
+  "day": 2,
+  "date": "2026-09-30",
+  "title": "Collocation: từ nào đi với từ nào",
+  "chapter": "2. Collocation",
+  "syllabus_refs": ["TIE-2"],
+  "concepts": ["collocations"],
+  "est_minutes": 15,
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Quy tắc tư duy",
+      "body_md": "Tiếng Anh ghép từ theo thói quen của người bản xứ, không theo logic dịch. Người Việt \"mở đèn\", người Anh turn on the light. Người Việt \"mưa to\", người Anh heavy rain.\n\nCách nghĩ: khi học một danh từ, hỏi luôn \"động từ và tính từ nào hay đi với nó?\""
+    },
+    {
+      "type": "compare",
+      "heading": "Dịch từng chữ và cách nói tự nhiên",
+      "items": [
+        { "wrong": "do a mistake", "right": "make a mistake", "why": "Nhóm với make: make a decision, make a plan, make money. (Mắc lỗi)" },
+        { "wrong": "big rain", "right": "heavy rain", "why": "heavy đi với rain, traffic, snow: heavy traffic (kẹt xe nặng). (Mưa to)" },
+        { "wrong": "open / close the light", "right": "turn on / turn off the light", "why": "Thiết bị điện dùng turn on / turn off: TV, máy lạnh, máy tính. (Mở đèn / tắt đèn)" },
+        { "wrong": "drink medicine", "right": "take medicine", "why": "Thuốc thì \"take\", kể cả thuốc nước. (Uống thuốc)" },
+        { "wrong": "The price is expensive.", "right": "The price is high.", "why": "price đi với high / low. Còn expensive dùng cho món đồ: It's expensive. (Giá đắt)" },
+        { "wrong": "say a lie", "right": "tell a lie", "why": "tell đi với lie, the truth, a story, a joke. (Nói dối)" },
+        { "wrong": "The traffic is stuck.", "right": "I'm stuck in traffic.", "why": "Người bị kẹt, không phải giao thông bị kẹt. (Mình bị kẹt xe)" }
+      ]
+    }
+  ],
+  "quiz": [
+    {
+      "id": "think-in-english-d02-q1",
+      "concept": "collocations",
+      "prompt": "Hôm qua mưa to quá.",
+      "options": ["There was heavy rain yesterday.", "There was big rain yesterday.", "There was strong rain yesterday."],
+      "why": "heavy rain là collocation chuẩn.",
+      "ref": "TIE-2"
+    },
+    {
+      "id": "think-in-english-d02-q2",
+      "concept": "collocations",
+      "prompt": "Bạn tắt đèn giúp mình được không?",
+      "options": ["Can you turn off the light?", "Can you close the light?", "Can you shut the light?"],
+      "why": "Thiết bị điện dùng turn off.",
+      "ref": "TIE-2"
+    },
+    {
+      "id": "think-in-english-d02-q3",
+      "concept": "collocations",
+      "prompt": "Đừng quên uống thuốc.",
+      "options": ["Don't forget to take your medicine.", "Don't forget to drink your medicine.", "Don't forget to eat your medicine."],
+      "why": "take medicine.",
+      "ref": "TIE-2"
+    },
+    {
+      "id": "think-in-english-d02-q4",
+      "concept": "collocations",
+      "prompt": "Mình kẹt xe rồi, trễ 10 phút nhé.",
+      "options": ["I'm stuck in traffic. I'll be 10 minutes late.", "The traffic stucks me. I come late 10 minutes.", "I'm jammed, I'm late 10 minutes."],
+      "why": "stuck in traffic + I'll be ... late là cách nói chuẩn.",
+      "ref": "TIE-2"
+    },
+    {
+      "id": "think-in-english-d02-q5",
+      "concept": "collocations",
+      "prompt": "Ai cũng mắc lỗi mà.",
+      "options": ["Everyone makes mistakes.", "Everyone does mistakes.", "Everyone has mistakes."],
+      "why": "make a mistake.",
+      "ref": "TIE-2"
+    }
+  ]
+}
