@@ -31,6 +31,6 @@ Tham số: `<chủ đề>` do người dùng cung cấp sau lệnh `/new-course`
 
 9. Chạy `node scripts/validate.mjs courses/<course-id>/roadmap.md` rồi `node scripts/build.mjs` để xác nhận không lỗi.
 
-10. **Commit + push lên nhánh `dep`**: `learn(<course-id>): thêm khoá học mới - roadmap N ngày`.
+10. **Commit + push lên nhánh deploy (`config.json` → `git.deployBranch`, hiện là `dep`)**: `learn(<course-id>): thêm khoá học mới - roadmap N ngày`.
 
 11. Trả lời ngắn gọn: tên khoá, tổng số ngày, ngày bắt đầu, ngày dự kiến hoàn thành (so với hạn chót nếu có). Gợi ý chạy `/today <course-id>`.

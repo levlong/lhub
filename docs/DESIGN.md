@@ -39,6 +39,7 @@ Lộ trình và bài học (`courses/`) là **nội dung giảng dạy**, trỏ 
 ```
 learning-hub/
 ├── CLAUDE.md                        # tóm tắt luật chơi, trỏ về docs/DESIGN.md
+├── config.json                      # cấu hình dùng chung (tên nhánh git...) - xem mục 6
 ├── docs/
 │   ├── DESIGN.md                    # file này
 │   └── reference/think-in-english.html   # mẫu giao diện đã được duyệt
@@ -46,12 +47,15 @@ learning-hub/
 │   ├── new-course/SKILL.md
 │   ├── today/SKILL.md
 │   ├── done/SKILL.md
-│   └── review/SKILL.md
+│   ├── review/SKILL.md
+│   ├── synthesize-syllabus/SKILL.md
+│   ├── status/SKILL.md
+│   └── ask/SKILL.md
 ├── sources/<course-id>/
 │   ├── syllabus.md                  # nguồn, version, URL, danh sách mục tiêu học
 │   └── *.md                         # trích dẫn thêm (nếu cần)
 ├── courses/<course-id>/
-│   ├── course.json                  # metadata khoá: tên, ngày bắt đầu, số phút/ngày
+│   ├── course.json                  # metadata khoá (schema mục 5.5)
 │   ├── roadmap.md                   # chương → ngày, kèm mã syllabus
 │   └── days/day-01.json ...         # bài học từng ngày (schema mục 5.2)
 ├── journal/
@@ -59,12 +63,22 @@ learning-hub/
 │   └── attempts.jsonl               # mỗi dòng là 1 lần làm quiz
 ├── knowledge/<concept-id>.md        # note khái niệm (schema mục 5.1)
 ├── scripts/
-│   └── build.mjs                    # md/json → site/data/*.json (Node, không dependency nặng)
+│   ├── lib/
+│   │   ├── frontmatter.mjs          # parse/ghi frontmatter, giữ nguyên dòng không đụng tới
+│   │   ├── schema.mjs               # validateDay, parseRoadmap, updateRoadmapStatus, quizzedConcepts
+│   │   └── srs.mjs                  # toán ôn tập ngắt quãng (interval, ngày giờ VN, chọn note để ôn)
+│   ├── build.mjs                    # courses/ + knowledge/ → site/data/*.json
+│   ├── validate.mjs                 # validate 1 file hoặc cả repo (dùng bởi skills trước khi commit)
+│   ├── next-day.mjs                 # /today: ngày kế tiếp, có ghi đè không, có nên đề xuất học lại
+│   ├── record-attempt.mjs           # /done: toàn bộ sổ sách - chống trùng, SRS, journal, roadmap
+│   └── select-review.mjs            # /review: chọn note đến hạn, cap theo quiz_size, gán 1 khoá/note
 ├── site/                            # web app tĩnh
 │   ├── index.html
 │   └── data/                        # BẢN DỰNG RA, không sửa tay (có thể .gitignore và build trong CI)
 └── .github/workflows/deploy.yml     # build + deploy
 ```
+
+Nguyên tắc phân công: **script lo sổ sách (parse, toán interval, cập nhật roadmap/trạng thái, chống trùng), Claude chỉ viết nội dung** (bài học, note kiến thức, diễn giải). Xem chi tiết từng script trong chính file `.mjs` (docstring đầu file) và trong `.claude/skills/*/SKILL.md`.
 
 ## 5. Định dạng file
 
@@ -144,40 +158,55 @@ Mỗi dòng một JSON:
 
 Bảng Markdown: `Ngày | Chương | Chủ đề | Mã syllabus | Khái niệm | Trạng thái`. Trạng thái gồm `todo`, `done` và `review`. Có thêm frontmatter `start_date`, `minutes_per_day`, `days_per_week`.
 
+### 5.5 Khoá học: `courses/<course-id>/course.json`
+
+```json
+{
+  "id": "istqb-ctfl",
+  "title": "ISTQB CTFL",
+  "course_type": "certification",
+  "level_from": null,
+  "level_to": null,
+  "start_date": "2026-09-29",
+  "minutes_per_day": 15,
+  "days_per_week": 6,
+  "deadline": null,
+  "explanation_language": "vi",
+  "example_context": "SAP ERP (Sales Order, Warehouse, Production Order)",
+  "quiz_size": null
+}
+```
+
+- Chỉ `id`, `title`, `start_date`, `minutes_per_day`, `days_per_week` là **bắt buộc** (tương thích ngược với `course.json` tạo trước mục này — không cần sửa lại file cũ).
+- `course_type`: `"certification"` (có chuẩn/tổ chức cấp chứng chỉ) hoặc `"skill"` (không có syllabus chính thức — `/new-course` gọi `/synthesize-syllabus`). Thiếu field này thì coi như `"certification"`.
+- `level_from` / `level_to`: thang trình độ nếu có (ví dụ CEFR `"B1"` → `"B2"`), `null` nếu không áp dụng.
+- `deadline`: `"YYYY-MM-DD"` hoặc `null`. Có deadline thì `/new-course` phải kiểm tra khả thi trước khi dựng roadmap (mục 6).
+- `explanation_language`: ngôn ngữ giải thích nội dung, mặc định `"vi"` nếu thiếu.
+- `example_context`: bối cảnh ưu tiên khi viết ví dụ (ví dụ "SAP ERP" cho người dùng làm test automation).
+- `quiz_size`: số câu quiz mỗi bài. `null`/thiếu → script tự tính theo `minutes_per_day` (xem `scripts/next-day.mjs`, `scripts/select-review.mjs`).
+
 ## 6. Luồng hằng ngày và các skill
 
+Tên nhánh git dùng trong toàn bộ luồng dưới đây (commit/push của mỗi skill) lấy từ `config.json` → `git.*`, không hardcode rải rác — đổi tên nhánh chỉ cần sửa 1 chỗ (trừ trigger trong `.github/workflows/deploy.yml`, là YAML tĩnh của GitHub Actions nên phải tự sửa riêng).
+
 ```
-/new-course <chủ đề>   (1 lần/khoá)
-/today                 → sinh bài hôm nay → commit + push → deploy → học trên điện thoại
-/done <dán kết quả>    → ghi journal, cập nhật knowledge + roadmap → commit + push
-/review                → bài ôn từ các note đến hạn và các lỗi hay sai
+/synthesize-syllabus <chủ đề>   (khi course_type=skill, không có syllabus chính thức)
+/new-course <chủ đề>            (1 lần/khoá)
+/today                          → sinh bài hôm nay → commit + push → deploy → học trên điện thoại
+/done <dán kết quả>             → ghi journal, cập nhật knowledge + roadmap → commit + push
+/review                         → bài ôn từ các note đến hạn và các lỗi hay sai
+/status                         → tiến độ từng khoá, note đến hạn, khái niệm yếu nhất
+/ask <câu hỏi>                  → hỏi đáp trên knowledge lake
 ```
 
-### `/new-course <chủ đề>`
-1. Tìm syllabus hoặc chuẩn chính thức (ưu tiên trang của tổ chức cấp chứng chỉ hoặc tài liệu gốc). Ghi URL, version và ngày truy cập vào `sources/<id>/syllabus.md`, liệt kê đầy đủ mục tiêu học kèm mã.
-2. Hỏi người dùng: ngày bắt đầu, số phút/ngày, số ngày/tuần, hạn chót (nếu có).
-3. Dựng `roadmap.md`: chia mục tiêu học theo ngày, cứ 6 ngày học thì có 1 ngày ôn tập, tuần cuối dành cho thi thử (nếu là khoá thi chứng chỉ).
-4. Tạo `course.json`, commit.
+Các bước chi tiết nằm trong `.claude/skills/<tên>/SKILL.md` (đọc trước khi chạy nếu chưa đọc trong phiên). Tóm tắt vai trò từng skill và script nó gọi:
 
-### `/today [course-id]`
-1. Đọc `roadmap.md` và `attempts.jsonl` để xác định ngày tiếp theo chưa học. Nếu bài hôm qua dưới 60% thì đề xuất học lại hoặc ôn trước.
-2. Đọc `sources/` cho các mã syllabus của ngày đó. Đọc các note `knowledge/` liên quan để không dạy trùng và để nối được `[[link]]`.
-3. Viết `days/day-NN.json` theo schema 5.2. Chạy `scripts/build.mjs`, commit, push.
-4. Trả lời ngắn: tên bài, thời lượng, link web app.
-
-### `/done <kết quả>`
-1. Nhận block kết quả mà web app copy ra (định dạng mục 5.3), rồi append vào `attempts.jsonl`.
-2. Với mỗi concept trong bài: tạo hoặc cập nhật note `knowledge/`. Câu đúng thì tăng `interval` (1 → 3 → 7 → 14 → 30 ngày). Câu sai thì `interval = 1`, `mistakes += 1`, và thêm mục "Hay nhầm" nếu có bài học rút ra.
-3. Ghi `journal/YYYY-MM-DD.md`: đã học gì, điểm, câu sai, ghi chú của người dùng (nếu có).
-4. Cập nhật trạng thái trong `roadmap.md`, build, commit, push.
-
-### `/review`
-1. Lấy các note có `next_review <= hôm nay`, ưu tiên `mistakes` cao.
-2. Sinh một bài ôn (cùng schema 5.2, `day` = `"review-YYYY-MM-DD"`) gồm tóm tắt và quiz trộn.
-3. Kết quả ôn cũng xử lý qua `/done`.
-
-### Hỏi đáp trên knowledge lake
-Khi người dùng hỏi "mình đã học gì về X", hãy tìm trong `knowledge/` và `journal/` trước, trả lời kèm tên note làm nguồn. Chỉ bổ sung kiến thức ngoài khi người dùng yêu cầu, và nói rõ đó là kiến thức ngoài.
+- **`/new-course`** — tìm/dựng syllabus (gọi `/synthesize-syllabus` nếu `course_type: skill`), kiểm tra khả thi nếu có `deadline`, tái dùng id `knowledge/` có sẵn, dựng `roadmap.md` + `course.json` (schema 5.5).
+- **`/today`** — gọi `scripts/next-day.mjs` để biết ngày kế tiếp, có sẵn file chưa (không ghi đè), có nên đề xuất học lại (bỏ qua các lần làm bài ôn), quiz size theo `minutes_per_day`. Claude chỉ viết nội dung bài học.
+- **`/done`** — gọi `scripts/record-attempt.mjs`: chống dán trùng (cùng `ts`+`course`+`day`), chỉ cập nhật SRS cho concept có câu quiz thật sự, tính ngày theo giờ Asia/Ho_Chi_Minh, bỏ qua roadmap cho ngày `review-*`. Script dừng và liệt kê rõ nếu thiếu note — Claude viết nội dung note đó rồi chạy lại.
+- **`/review`** — gọi `scripts/select-review.mjs`: chọn note đến hạn, cap theo `quiz_size`, mỗi note chỉ gán vào đúng 1 khoá (tránh hỏi trùng), không ghi đè bài ôn cùng ngày. Kết quả ôn cũng xử lý qua `/done`.
+- **`/status`** — tiến độ từng khoá (bao nhiêu % roadmap `done`), note nào đến hạn ôn, khái niệm nào `mistakes` cao nhất.
+- **`/ask <câu hỏi>`** — khi người dùng hỏi "mình đã học gì về X", tìm trong `knowledge/` và `journal/` trước, trả lời kèm tên note làm nguồn. Chỉ bổ sung kiến thức ngoài khi người dùng yêu cầu, và nói rõ đó là kiến thức ngoài.
 
 ## 7. Web app (`site/`)
 

@@ -35,6 +35,6 @@ Tham số: `[course-id]` (tuỳ chọn, do người dùng cung cấp sau `/today
 
 6. Chạy `node scripts/validate.mjs courses/<course-id>/days/day-NN.json` rồi `node scripts/build.mjs` để chắc chắn không lỗi. **Không** đổi trạng thái roadmap ở bước này — chỉ `/done` mới chuyển sang `done`.
 
-7. **Commit + push lên nhánh `dep`**: `learn(<course-id>): day NN – <tiêu đề bài>`.
+7. **Commit + push lên nhánh deploy (`config.json` → `git.deployBranch`, hiện là `dep`)**: `learn(<course-id>): day NN – <tiêu đề bài>`.
 
 8. Trả lời ngắn: tên bài, ~số phút, nhắc mở web app để học trên điện thoại — vào tab "Hôm nay".

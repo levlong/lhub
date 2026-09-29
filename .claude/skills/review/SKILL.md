@@ -24,7 +24,7 @@ Tham số: `[course-id]` (tuỳ chọn — nếu có thì chỉ ôn note của k
      - `sections`: 1 mục `text` tóm tắt lại (dùng nguyên nội dung "Tóm tắt" đã có trong từng note, không bịa thêm).
      - `quiz`: 1 câu cho mỗi note trong danh sách (bám theo "Hay nhầm" của note nếu có, hoặc dạng câu hỏi gốc trong bài học mà `source` trỏ tới). Đáp án đúng luôn ở `options[0]`.
 
-3. Chạy `node scripts/validate.mjs courses/<course>/days/<file>.json` cho từng file vừa viết, rồi `node scripts/build.mjs`. **Commit + push lên nhánh `dep`**: `learn(<course-id>): review YYYY-MM-DD`.
+3. Chạy `node scripts/validate.mjs courses/<course>/days/<file>.json` cho từng file vừa viết, rồi `node scripts/build.mjs`. **Commit + push lên nhánh deploy (`config.json` → `git.deployBranch`, hiện là `dep`)**: `learn(<course-id>): review YYYY-MM-DD`.
 
 4. Trả lời ngắn: mỗi khoá ôn bao nhiêu note, tên bài ôn, nhắc mở web app.
 

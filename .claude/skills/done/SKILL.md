@@ -27,6 +27,6 @@ Toàn bộ sổ sách (chống dán trùng, tính SRS, ghi journal, cập nhật
 
 4. Nếu người dùng có ghi chú thêm trong yêu cầu (ví dụ nhận xét về bài học), nối thêm 1 dòng vào cuối `journal/<YYYY-MM-DD theo giờ VN>.md` mà script vừa ghi.
 
-5. Chạy `node scripts/build.mjs`. **Commit + push lên nhánh `dep`**: `learn(<course>): day NN – done, score S/T`.
+5. Chạy `node scripts/build.mjs`. **Commit + push lên nhánh deploy (`config.json` → `git.deployBranch`, hiện là `dep`)**: `learn(<course>): day NN – done, score S/T`.
 
 6. Trả lời ngắn: điểm số, số khái niệm đã cập nhật, nếu điểm dưới 60% thì nhắc là `/today` lần sau sẽ đề xuất ôn lại (script `next-day.mjs` tự bỏ qua các lần làm bài ôn tập khi xét điểm thấp).

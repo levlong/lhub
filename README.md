@@ -16,9 +16,13 @@ site/                     web app tĩnh (đọc site/data/ lúc chạy)
 
 ## Nhánh git
 
-- **`master`** — milestone: chỉ cập nhật khi một mốc đã ổn định (xong 1 giai đoạn, xong 1 tính năng lớn), không nhận commit lặt vặt hằng ngày.
-- **`dev`** — nơi phát triển tính năng mới (thay đổi `site/`, `scripts/build.mjs`, skills...). Xong thì merge vào `master` khi tới milestone.
-- **`dep`** — nhánh trigger deploy. Push lên `dep` (thường bằng cách merge `master` hoặc `dev` vào đây) là GitHub Actions build + deploy web app thật. Không dev trực tiếp trên `dep`.
+Tên nhánh nằm ở `config.json` → `git.*`, chỉ 1 nơi duy nhất (skills và tài liệu đều trỏ về đây thay vì hardcode):
+
+- **`git.milestoneBranch`** (`master`) — milestone: chỉ cập nhật khi một mốc đã ổn định (xong 1 giai đoạn, xong 1 tính năng lớn), không nhận commit lặt vặt hằng ngày.
+- **`git.devBranch`** (`dev`) — nơi phát triển tính năng mới (thay đổi `site/`, `scripts/`, skills...). Xong thì merge vào `master` khi tới milestone.
+- **`git.deployBranch`** (`dep`) — nhánh trigger deploy. Push lên `dep` (thường bằng cách merge `master` hoặc `dev` vào đây) là GitHub Actions build + deploy web app thật. Không dev trực tiếp trên `dep`.
+
+Lưu ý: trigger trong `.github/workflows/deploy.yml` (`on.push.branches`) là YAML tĩnh của GitHub Actions, không đọc được `config.json` lúc chạy — đổi `git.deployBranch` thì phải tự sửa cả dòng trigger trong workflow.
 
 Việc học hằng ngày (`/new-course`, `/today`, `/done`, `/review` — sinh/sửa `sources/`, `courses/`, `knowledge/`, `journal/`) không phải "tính năng", nên commit **thẳng vào `dep`** để lên web ngay. Định kỳ (theo tuần hoặc khi ổn định): `dep → merge → dev → merge → master`.
 

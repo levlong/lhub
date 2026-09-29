@@ -1,0 +1,7 @@
+{
+  "git": {
+    "milestoneBranch": "master",
+    "devBranch": "dev",
+    "deployBranch": "dep"
+  }
+}
