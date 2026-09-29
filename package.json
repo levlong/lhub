@@ -1,0 +1,10 @@
+{
+  "name": "lhub",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "validate": "node scripts/validate.mjs",
+    "test": "node --test scripts/lib/*.test.mjs scripts/*.test.mjs"
+  }
+}
