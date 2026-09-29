@@ -1,0 +1,73 @@
+{
+  "course": "think-in-english",
+  "day": 1,
+  "date": "2026-09-29",
+  "title": "Giới từ: thừa và thiếu",
+  "chapter": "1. Giới từ",
+  "syllabus_refs": ["TIE-1"],
+  "concepts": ["prepositions-transfer-errors"],
+  "est_minutes": 15,
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Quy tắc tư duy",
+      "body_md": "Đừng tự động thêm \"về, với, cho, đến\" khi dịch. Mỗi động từ tiếng Anh có một \"khung\" riêng: có từ đi thẳng với tân ngữ (discuss the plan), có từ bắt buộc cần giới từ (listen to music).\n\nCách nghĩ: học động từ cùng khung của nó, như một cụm. Đừng học discuss, hãy học discuss something."
+    },
+    {
+      "type": "compare",
+      "heading": "Dịch từng chữ và cách nói tự nhiên",
+      "items": [
+        { "wrong": "discuss about the plan", "right": "discuss the plan", "why": "discuss đã bao hàm nghĩa \"về\", nên không cần about. (Thảo luận về kế hoạch)" },
+        { "wrong": "marry with her", "right": "marry her", "why": "Hoặc get married to her. Không dùng with. (Cưới cô ấy)" },
+        { "wrong": "enter into the room", "right": "enter the room", "why": "enter đi thẳng với nơi chốn. Nói go into the room cũng được. (Vào phòng)" },
+        { "wrong": "contact with me", "right": "contact me", "why": "contact (động từ) không cần with. Nhưng danh từ thì có: keep in contact with me. (Liên lạc với tôi)" },
+        { "wrong": "listen music", "right": "listen to music", "why": "Ngược lại với discuss: listen là nội động từ, bắt buộc có to. (Nghe nhạc)" },
+        { "wrong": "wait you", "right": "wait for you", "why": "wait luôn cần for khi có người hoặc vật được đợi. (Đợi bạn)" },
+        { "wrong": "explain me the rule", "right": "explain the rule to me", "why": "explain không đi thẳng với người. Cấu trúc là explain something to someone. (Giải thích cho tôi quy định)" },
+        { "wrong": "answer to the email", "right": "answer the email", "why": "answer đi thẳng. Còn reply thì cần to: reply to the email. (Trả lời email)" }
+      ]
+    }
+  ],
+  "quiz": [
+    {
+      "id": "think-in-english-d01-q1",
+      "concept": "prepositions-transfer-errors",
+      "prompt": "Chúng ta cần bàn về chuyện này.",
+      "options": ["We need to discuss this.", "We need to discuss about this.", "We need to discuss on this."],
+      "why": "discuss là ngoại động từ, tân ngữ đi ngay sau.",
+      "ref": "TIE-1"
+    },
+    {
+      "id": "think-in-english-d01-q2",
+      "concept": "prepositions-transfer-errors",
+      "prompt": "Anh ấy đang đợi xe buýt.",
+      "options": ["He's waiting for the bus.", "He's waiting the bus.", "He's waiting to the bus."],
+      "why": "wait for something.",
+      "ref": "TIE-1"
+    },
+    {
+      "id": "think-in-english-d01-q3",
+      "concept": "prepositions-transfer-errors",
+      "prompt": "Cứ nhắn cho mình nhé.",
+      "options": ["Just text me.", "Just text to me.", "Just text for me."],
+      "why": "text someone. Còn text for me nghĩa là nhắn tin thay mình.",
+      "ref": "TIE-1"
+    },
+    {
+      "id": "think-in-english-d01-q4",
+      "concept": "prepositions-transfer-errors",
+      "prompt": "Bạn giải thích cho mình được không?",
+      "options": ["Can you explain it to me?", "Can you explain me?", "Can you explain for me?"],
+      "why": "explain something to someone.",
+      "ref": "TIE-1"
+    },
+    {
+      "id": "think-in-english-d01-q5",
+      "concept": "prepositions-transfer-errors",
+      "prompt": "Mình đã trả lời tin nhắn của cô ấy.",
+      "options": ["I replied to her message.", "I replied her message.", "I replied at her message."],
+      "why": "reply to something. Nói I answered her message cũng đúng.",
+      "ref": "TIE-1"
+    }
+  ]
+}
