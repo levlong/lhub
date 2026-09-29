@@ -14,9 +14,17 @@ site/                     web app tĩnh (đọc site/data/ lúc chạy)
 .claude/skills/           /new-course · /today · /done · /review
 ```
 
+## Nhánh git
+
+- **`master`** — milestone: chỉ cập nhật khi một mốc đã ổn định (xong 1 giai đoạn, xong 1 tính năng lớn), không nhận commit lặt vặt hằng ngày.
+- **`dev`** — nơi phát triển tính năng mới (thay đổi `site/`, `scripts/build.mjs`, skills...). Xong thì merge vào `master` khi tới milestone.
+- **`dep`** — nhánh trigger deploy. Push lên `dep` (thường bằng cách merge `master` hoặc `dev` vào đây) là GitHub Actions build + deploy web app thật. Không dev trực tiếp trên `dep`.
+
+Việc học hằng ngày (`/new-course`, `/today`, `/done`, `/review` — sinh/sửa `sources/`, `courses/`, `knowledge/`, `journal/`) không phải "tính năng", nên commit **thẳng vào `dep`** để lên web ngay. Định kỳ (theo tuần hoặc khi ổn định): `dep → merge → dev → merge → master`.
+
 ## Hosting
 
-GitHub Pages, nguồn **GitHub Actions** (không phải "Deploy from a branch"). Bật một lần: **Settings → Pages → Source: GitHub Actions**. Từ đó mỗi lần push lên `master`, workflow `.github/workflows/deploy.yml` tự chạy `node scripts/build.mjs` rồi deploy `site/`.
+GitHub Pages, nguồn **GitHub Actions** (không phải "Deploy from a branch"). Bật một lần: **Settings → Pages → Source: GitHub Actions**. Workflow `.github/workflows/deploy.yml` trigger khi push lên **`dep`**, tự chạy `node scripts/build.mjs` rồi deploy `site/`.
 
 ## Chạy thử cục bộ
 

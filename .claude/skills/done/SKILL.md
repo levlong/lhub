@@ -27,6 +27,6 @@ Tham số: `<kết quả>` — người dùng dán 1 dòng JSON theo schema mụ
 
 6. **Cập nhật `courses/<course>/roadmap.md`**: đổi trạng thái hàng ứng với `day` từ `todo`/`review` thành `done` (ghi nhận đã học, bất kể điểm cao hay thấp — việc đề xuất học lại khi điểm thấp do `/today` xử lý ở lần chạy sau, dựa vào `attempts.jsonl`).
 
-7. Chạy `node scripts/build.mjs`. **Commit + push**: `learn(<course>): day NN – done, score S/T`.
+7. Chạy `node scripts/build.mjs`. **Commit + push lên nhánh `dep`** (nội dung học hằng ngày lên web ngay, xem README mục "Nhánh git"): `learn(<course>): day NN – done, score S/T`.
 
 8. Trả lời ngắn: điểm số, số khái niệm đã cập nhật, nếu điểm dưới 60% thì nhắc là `/today` lần sau sẽ đề xuất ôn lại.

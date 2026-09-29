@@ -33,6 +33,6 @@ Tham số: `<chủ đề>` do người dùng cung cấp sau lệnh `/new-course`
 
 6. Chạy `node scripts/build.mjs` để xác nhận không lỗi (roadmap parse được).
 
-7. **Commit** (nguyên tắc 5): `learn(<course-id>): thêm khoá học mới - roadmap N ngày`. Không tự push nếu người dùng chưa xác nhận workflow push, trừ khi đã được đồng ý từ trước trong phiên.
+7. **Commit + push lên nhánh `dep`** (nguyên tắc 5; xem README mục "Nhánh git" — nội dung khoá học đi thẳng vào `dep` để `/today` chạy tiếp trên đó được): `learn(<course-id>): thêm khoá học mới - roadmap N ngày`.
 
 8. Trả lời ngắn gọn: tên khoá, tổng số ngày, ngày bắt đầu, ngày dự kiến hoàn thành. Gợi ý chạy `/today <course-id>` để sinh bài đầu tiên.

@@ -2,7 +2,7 @@ name: Deploy Learning Hub
 
 on:
   push:
-    branches: [master]
+    branches: [dep]
   workflow_dispatch:
 
 permissions:

@@ -28,6 +28,6 @@ Tham số: `[course-id]` (tuỳ chọn, do người dùng cung cấp sau `/today
 
 5. Chạy `node scripts/build.mjs` để xác nhận không lỗi. **Không** đổi trạng thái hàng roadmap ở bước này — trạng thái chỉ chuyển sang `done` khi người dùng nộp kết quả qua `/done`.
 
-6. **Commit + push**: `learn(<course-id>): day NN – <tiêu đề bài>`.
+6. **Commit + push lên nhánh `dep`** (xem README mục "Nhánh git"): `learn(<course-id>): day NN – <tiêu đề bài>`.
 
 7. Trả lời ngắn: tên bài, ~số phút, nhắc mở web app (`site/index.html` hoặc link GitHub Pages đã deploy) để học trên điện thoại — vào tab "Hôm nay".

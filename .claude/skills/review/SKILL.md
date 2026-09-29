@@ -20,7 +20,7 @@ Tham số: `[course-id]` (tuỳ chọn — nếu có thì chỉ ôn note của k
    - `quiz`: trộn câu hỏi liên quan tới các note đó — có thể viết câu hỏi mới bám sát "Hay nhầm" của note, hoặc tái sử dụng dạng câu hỏi từ bài học gốc (`source` trong note trỏ tới đâu thì bám theo đó). Đáp án đúng luôn ở `options[0]`.
    - Nếu ôn nhiều khoá cùng lúc (không truyền `course-id`), tạo riêng 1 file ôn tập cho mỗi khoá có note đến hạn (vì mỗi file `days/` thuộc về đúng 1 `course`).
 
-3. Chạy `node scripts/build.mjs`. **Commit + push**: `learn(<course-id>): review YYYY-MM-DD`.
+3. Chạy `node scripts/build.mjs`. **Commit + push lên nhánh `dep`** (xem README mục "Nhánh git"): `learn(<course-id>): review YYYY-MM-DD`.
 
 4. Trả lời ngắn: số note được ôn, tên bài ôn, nhắc mở web app.
 
