@@ -1,0 +1,467 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Think in English</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+/* Layout: one reading column; lesson chips on top; each lesson = thinking rule, wrong→natural cards (marker-highlighted), then a quiz */
+:root {
+  --bg: #F3F4F0;
+  --surface: #FFFFFF;
+  --ink: #18202E;
+  --muted: #596172;
+  --line: #DADDD4;
+  --hl: #FFE36A;
+  --wrong: #B5382C;
+  --right: #1F6E4B;
+  --accent: #2A4ED4;
+  --accent-ink: #FFFFFF;
+  --accent-soft: #E6EBFB;
+  --display: "Bricolage Grotesque", "Be Vietnam Pro", system-ui, sans-serif;
+  --body: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11141A; --surface: #1A1F28; --ink: #E7E9EF; --muted: #9BA2B0; --line: #2B3240;
+    --hl: #5E5112; --wrong: #F08070; --right: #72D0A0; --accent: #93A9FF; --accent-ink: #0E1220; --accent-soft: #232C47;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11141A; --surface: #1A1F28; --ink: #E7E9EF; --muted: #9BA2B0; --line: #2B3240;
+  --hl: #5E5112; --wrong: #F08070; --right: #72D0A0; --accent: #93A9FF; --accent-ink: #0E1220; --accent-soft: #232C47;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.6; }
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 32px 64px; }
+header .eyebrow { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin: 0; }
+h1 { font-family: var(--display); font-weight: 800; font-size: clamp(40px, 8vw, 64px); line-height: 1; margin: 8px 0 12px; letter-spacing: -.02em; }
+h1 .hl, .hl { background-image: linear-gradient(transparent 56%, var(--hl) 56%, var(--hl) 92%, transparent 92%); padding-inline: 2px; }
+.lede { color: var(--muted); max-width: 60ch; margin: 0; font-size: 17px; }
+
+nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 28px 0 32px; }
+.chip { font: 600 14px/1 var(--body); padding: 10px 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+.chip:hover { border-color: var(--accent); }
+.chip[aria-current="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.chip .num { font-family: var(--display); font-weight: 800; }
+.chip .done { width: 8px; height: 8px; border-radius: 50%; background: var(--right); }
+.chip[aria-current="true"] .done { background: var(--accent-ink); }
+.chip.alt { background: transparent; }
+button:focus-visible, .chip:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+.lesson-head .kicker { font-family: var(--display); font-weight: 800; color: var(--accent); font-size: 15px; letter-spacing: .04em; text-transform: uppercase; margin: 0; }
+h2 { font-weight: 800; font-size: clamp(26px, 4.5vw, 34px); line-height: 1.2; margin: 4px 0 16px; text-wrap: balance; }
+h3 { font-weight: 700; font-size: 20px; margin: 40px 0 12px; }
+.rule { border: 1.5px dashed var(--ink); border-radius: 4px; padding: 16px 18px; background: var(--surface); }
+.rule .label { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0 0 4px; }
+.rule p { margin: 0; }
+.rule p + p { margin-top: 8px; }
+
+.toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin: 40px 0 12px; }
+.toolbar h3 { margin: 0; }
+.switch { display: inline-flex; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); cursor: pointer; user-select: none; }
+.switch input { width: 18px; height: 18px; accent-color: var(--accent); }
+
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr)); gap: 12px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 16px 18px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.card p { margin: 0; }
+.vn { color: var(--muted); font-size: 14px; }
+.vn b { color: var(--ink); font-weight: 600; }
+.line { display: grid; grid-template-columns: 20px 1fr auto; gap: 6px; align-items: start; font-size: 17px; }
+.mark { font-weight: 800; line-height: 1.6; }
+.wrong .mark { color: var(--wrong); }
+.wrong s { color: var(--wrong); text-decoration-thickness: 1.5px; }
+.right .mark { color: var(--right); }
+.right .txt { font-weight: 600; }
+.why { font-size: 14px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 8px; margin-top: 4px !important; }
+.speak { border: 0; background: transparent; color: var(--muted); cursor: pointer; padding: 2px; border-radius: 4px; display: inline-flex; }
+.speak:hover { color: var(--accent); }
+.speak svg { width: 20px; height: 20px; }
+.reveal-btn { display: none; align-self: flex-start; font: 600 14px var(--body); background: var(--accent-soft); color: var(--accent); border: 0; border-radius: 6px; padding: 8px 12px; cursor: pointer; }
+.card.masked .reveal { display: none; }
+.card.masked .reveal-btn { display: inline-block; }
+
+/* quiz */
+.quiz { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 20px; }
+.qmeta { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; margin-bottom: 12px; }
+.bar { height: 4px; background: var(--line); border-radius: 4px; overflow: hidden; margin-bottom: 16px; }
+.bar i { display: block; height: 100%; background: var(--accent); transition: width .25s; }
+.qprompt { font-size: 14px; color: var(--muted); margin: 0 0 4px; }
+.qvn { font-size: 20px; font-weight: 700; margin: 0 0 16px; }
+.opts { display: grid; gap: 8px; }
+.opt { text-align: left; font: 500 16px/1.4 var(--body); color: var(--ink); background: var(--bg); border: 1.5px solid var(--line); border-radius: 8px; padding: 12px 14px; cursor: pointer; }
+.opt:hover:not(:disabled) { border-color: var(--accent); }
+.opt:disabled { cursor: default; }
+.opt.correct { border-color: var(--right); color: var(--right); font-weight: 700; }
+.opt.picked-wrong { border-color: var(--wrong); color: var(--wrong); text-decoration: line-through; }
+.feedback { margin-top: 14px; font-size: 15px; }
+.feedback .verdict { font-weight: 700; }
+.feedback .ok { color: var(--right); }
+.feedback .no { color: var(--wrong); }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.btn { font: 600 15px var(--body); padding: 10px 16px; border-radius: 8px; border: 1.5px solid var(--accent); background: var(--accent); color: var(--accent-ink); cursor: pointer; }
+.btn.ghost { background: transparent; color: var(--accent); }
+.result { text-align: left; }
+.result .score { font-family: var(--display); font-weight: 800; font-size: 56px; line-height: 1; font-variant-numeric: tabular-nums; }
+.result p { margin: 8px 0 0; color: var(--muted); }
+
+.pager { display: flex; justify-content: space-between; gap: 12px; margin-top: 40px; flex-wrap: wrap; }
+
+/* habits */
+.habits { display: grid; gap: 12px; counter-reset: h; }
+.habit { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 16px 18px; display: grid; grid-template-columns: 40px 1fr; gap: 12px; }
+.habit::before { counter-increment: h; content: counter(h); font-family: var(--display); font-weight: 800; font-size: 28px; line-height: 1; color: var(--accent); }
+.habit h4 { margin: 0 0 4px; font-size: 17px; }
+.habit p { margin: 0; color: var(--muted); font-size: 15px; }
+.habit .ex { margin-top: 8px; color: var(--ink); font-size: 15px; }
+.plan { width: 100%; border-collapse: collapse; font-size: 15px; }
+.plan-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+.plan th, .plan td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.plan tr:last-child td { border-bottom: 0; }
+.plan th { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.plan td:first-child { font-weight: 700; white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { .bar i { transition: none; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Giáo trình 6 bài · Giao tiếp hằng ngày</p>
+    <h1>Think in <span class="hl">English</span></h1>
+    <p class="lede">Ngừng dịch từng chữ từ tiếng Việt. Mỗi bài xử lý một kiểu "bẫy dịch" hay gặp, kèm cách nói tự nhiên và bài tập kiểm tra ngay.</p>
+  </header>
+  <nav id="nav" aria-label="Các bài học"></nav>
+  <main id="view"></main>
+</div>
+
+<script>
+const LESSONS = [
+  {
+    id: "l1", title: "Giới từ: thừa và thiếu",
+    rule: ["Đừng tự động thêm \"về, với, cho, đến\" khi dịch. Mỗi động từ tiếng Anh có một \"khung\" riêng: có từ đi thẳng với tân ngữ (discuss the plan), có từ bắt buộc cần giới từ (listen to music).",
+           "Cách nghĩ: học động từ cùng khung của nó, như một cụm. Đừng học discuss, hãy học discuss something."],
+    items: [
+      { vn: "Thảo luận về kế hoạch", wrong: "discuss about the plan", right: "discuss the plan", why: "discuss đã bao hàm nghĩa \"về\", nên không cần about." },
+      { vn: "Cưới cô ấy", wrong: "marry with her", right: "marry her", why: "Hoặc get married to her. Không dùng with." },
+      { vn: "Vào phòng", wrong: "enter into the room", right: "enter the room", why: "enter đi thẳng với nơi chốn. Nói go into the room cũng được." },
+      { vn: "Liên lạc với tôi", wrong: "contact with me", right: "contact me", why: "contact (động từ) không cần with. Nhưng danh từ thì có: keep in contact with me." },
+      { vn: "Nghe nhạc", wrong: "listen music", right: "listen to music", why: "Ngược lại với discuss: listen là nội động từ, bắt buộc có to." },
+      { vn: "Đợi bạn", wrong: "wait you", right: "wait for you", why: "wait luôn cần for khi có người hoặc vật được đợi." },
+      { vn: "Giải thích cho tôi quy định", wrong: "explain me the rule", right: "explain the rule to me", why: "explain không đi thẳng với người. Cấu trúc là explain something to someone." },
+      { vn: "Trả lời email", wrong: "answer to the email", right: "answer the email", why: "answer đi thẳng. Còn reply thì cần to: reply to the email." }
+    ],
+    quiz: [
+      { vn: "Chúng ta cần bàn về chuyện này.", options: ["We need to discuss this.", "We need to discuss about this.", "We need to discuss on this."], why: "discuss là ngoại động từ, tân ngữ đi ngay sau." },
+      { vn: "Anh ấy đang đợi xe buýt.", options: ["He's waiting for the bus.", "He's waiting the bus.", "He's waiting to the bus."], why: "wait for something." },
+      { vn: "Cứ nhắn cho mình nhé.", options: ["Just text me.", "Just text to me.", "Just text for me."], why: "text someone. Còn text for me nghĩa là nhắn tin thay mình." },
+      { vn: "Bạn giải thích cho mình được không?", options: ["Can you explain it to me?", "Can you explain me?", "Can you explain for me?"], why: "explain something to someone." },
+      { vn: "Mình đã trả lời tin nhắn của cô ấy.", options: ["I replied to her message.", "I replied her message.", "I replied at her message."], why: "reply to something. Nói I answered her message cũng đúng." }
+    ]
+  },
+  {
+    id: "l2", title: "Collocation: từ nào đi với từ nào",
+    rule: ["Tiếng Anh ghép từ theo thói quen của người bản xứ, không theo logic dịch. Người Việt \"mở đèn\", người Anh turn on the light. Người Việt \"mưa to\", người Anh heavy rain.",
+           "Cách nghĩ: khi học một danh từ, hỏi luôn \"động từ và tính từ nào hay đi với nó?\""],
+    items: [
+      { vn: "Mắc lỗi", wrong: "do a mistake", right: "make a mistake", why: "Nhóm với make: make a decision, make a plan, make money." },
+      { vn: "Mưa to", wrong: "big rain", right: "heavy rain", why: "heavy đi với rain, traffic, snow: heavy traffic (kẹt xe nặng)." },
+      { vn: "Mở đèn / tắt đèn", wrong: "open / close the light", right: "turn on / turn off the light", why: "Thiết bị điện dùng turn on / turn off: TV, máy lạnh, máy tính." },
+      { vn: "Uống thuốc", wrong: "drink medicine", right: "take medicine", why: "Thuốc thì \"take\", kể cả thuốc nước." },
+      { vn: "Giá đắt", wrong: "The price is expensive.", right: "The price is high.", why: "price đi với high / low. Còn expensive dùng cho món đồ: It's expensive." },
+      { vn: "Nói dối", wrong: "say a lie", right: "tell a lie", why: "tell đi với lie, the truth, a story, a joke." },
+      { vn: "Mình bị kẹt xe", wrong: "The traffic is stuck.", right: "I'm stuck in traffic.", why: "Người bị kẹt, không phải giao thông bị kẹt." }
+    ],
+    quiz: [
+      { vn: "Hôm qua mưa to quá.", options: ["There was heavy rain yesterday.", "There was big rain yesterday.", "There was strong rain yesterday."], why: "heavy rain là collocation chuẩn." },
+      { vn: "Bạn tắt đèn giúp mình được không?", options: ["Can you turn off the light?", "Can you close the light?", "Can you shut the light?"], why: "Thiết bị điện dùng turn off." },
+      { vn: "Đừng quên uống thuốc.", options: ["Don't forget to take your medicine.", "Don't forget to drink your medicine.", "Don't forget to eat your medicine."], why: "take medicine." },
+      { vn: "Mình kẹt xe rồi, trễ 10 phút nhé.", options: ["I'm stuck in traffic. I'll be 10 minutes late.", "The traffic stucks me. I come late 10 minutes.", "I'm jammed, I'm late 10 minutes."], why: "stuck in traffic + I'll be ... late là cách nói chuẩn." },
+      { vn: "Ai cũng mắc lỗi mà.", options: ["Everyone makes mistakes.", "Everyone does mistakes.", "Everyone has mistakes."], why: "make a mistake." }
+    ]
+  },
+  {
+    id: "l3", title: "Cấu trúc câu: đừng xếp theo tiếng Việt",
+    rule: ["Tiếng Việt cho phép \"Mặc dù... nhưng\", \"Vì... nên\", \"Ở đây có...\". Tiếng Anh thì mỗi cặp mệnh đề chỉ cần một từ nối, và câu nào cũng cần chủ ngữ rõ ràng.",
+           "Cách nghĩ: chọn một từ nối thôi. Khi thiếu chủ ngữ, dùng It hoặc There is / There are."],
+    items: [
+      { vn: "Tôi rất thích nó", wrong: "I very like it.", right: "I really like it.", why: "very không đứng trước động từ. Dùng really, hoặc I like it a lot." },
+      { vn: "Mặc dù trời mưa nhưng tôi vẫn đi", wrong: "Although it rained, but I still went.", right: "Although it rained, I still went.", why: "Although và but không đi cùng nhau. Chọn một." },
+      { vn: "Vì mệt nên tôi ở nhà", wrong: "Because I was tired, so I stayed home.", right: "I was tired, so I stayed home.", why: "Because và so không đi cùng nhau. Hoặc: Because I was tired, I stayed home." },
+      { vn: "Hôm nay nóng quá", wrong: "Today is very hot.", right: "It's really hot today.", why: "Nói về thời tiết, người bản xứ gần như luôn mở đầu bằng It's." },
+      { vn: "Nhà tôi có 4 người", wrong: "My family has 4 people.", right: "There are four of us in my family.", why: "\"Có\" với nghĩa tồn tại thì dùng There is / There are." },
+      { vn: "Ở đây có wifi không?", wrong: "Here have wifi?", right: "Is there wifi here?", why: "Hoặc hỏi người phục vụ: Do you have wifi?" },
+      { vn: "Tôi thấy nó hay", wrong: "I see it's good.", right: "I think it's good.", why: "\"Thấy\" với nghĩa nhận xét là think, không phải see." },
+      { vn: "Theo tôi, tôi nghĩ...", wrong: "In my opinion, I think...", right: "I think...", why: "Bị lặp ý. Chọn In my opinion hoặc I think." }
+    ],
+    quiz: [
+      { vn: "Mặc dù đắt nhưng mình vẫn mua.", options: ["Although it was expensive, I still bought it.", "Although it was expensive, but I bought it.", "Although expensive, but I still bought."], why: "Bỏ but khi đã có although." },
+      { vn: "Mình rất thích quán này.", options: ["I really like this place.", "I very like this place.", "I like very this place."], why: "really like hoặc like ... a lot." },
+      { vn: "Ở đây có chỗ đậu xe không?", options: ["Is there parking here?", "Here has parking?", "Does here have parking?"], why: "Hỏi sự tồn tại: Is there ...?" },
+      { vn: "Mình thấy phim này hay.", options: ["I think this movie is good.", "I see this movie is good.", "I feel this movie good."], why: "\"Thấy\" = đánh giá, nên dùng think." },
+      { vn: "Vì đói nên mình ăn trước.", options: ["I was hungry, so I ate first.", "Because I was hungry, so I ate first.", "Because hungry, I ate first."], why: "Chỉ dùng một từ nối: so hoặc because." }
+    ]
+  },
+  {
+    id: "l4", title: "Thì: để động từ tự mang thời gian",
+    rule: ["Tiếng Việt thêm \"đã, đang, sẽ, rồi\" và giữ nguyên động từ. Tiếng Anh thì thay đổi chính động từ.",
+           "Cách nghĩ: trước khi nói, hỏi nhanh hai câu. Chuyện này xảy ra khi nào? Nó còn kéo dài hay còn liên quan tới bây giờ không? Nếu có, dùng have + V3."],
+    items: [
+      { vn: "Tuần trước tôi đi Đà Lạt", wrong: "Last week I go to Da Lat.", right: "Last week I went to Da Lat.", why: "Có mốc quá khứ (last week, yesterday) thì dùng quá khứ đơn." },
+      { vn: "Hôm qua tôi không đi", wrong: "Yesterday I don't go.", right: "I didn't go yesterday.", why: "Phủ định quá khứ dùng didn't + V." },
+      { vn: "Tôi sống ở đây từ 2020", wrong: "I live here since 2020.", right: "I've lived here since 2020.", why: "Bắt đầu trong quá khứ và vẫn còn tới giờ thì dùng have + V3." },
+      { vn: "Tôi học tiếng Anh 3 năm rồi", wrong: "I learn English 3 years.", right: "I've been learning English for three years.", why: "Nhấn mạnh quá trình kéo dài thì dùng have been + V-ing + for." },
+      { vn: "Tới nơi thì gọi mình", wrong: "Call me when you will arrive.", right: "Call me when you arrive.", why: "Sau when, after, before, if thì không dùng will, dù nói về tương lai." },
+      { vn: "Bạn đã từng đến Nhật chưa?", wrong: "You have gone to Japan?", right: "Have you ever been to Japan?", why: "been to = đã từng đến rồi về. gone to = đi và vẫn đang ở đó." },
+      { vn: "Mình ăn rồi", wrong: "I eat already.", right: "I've already eaten.", why: "Trong văn nói Mỹ, I already ate cũng rất phổ biến." }
+    ],
+    quiz: [
+      { vn: "Tối qua mình không ngủ được.", options: ["I couldn't sleep last night.", "Yesterday I can't sleep.", "Last night I don't sleep."], why: "Quá khứ của can't là couldn't." },
+      { vn: "Mình làm ở công ty này 2 năm rồi.", options: ["I've worked here for two years.", "I work here 2 years.", "I am working here since two years."], why: "Việc vẫn tiếp diễn tới giờ, dùng have + V3 + for." },
+      { vn: "Khi nào xong thì báo mình nhé.", options: ["Let me know when you're done.", "Let me know when you will be done.", "Let me know when you done."], why: "Sau when không dùng will." },
+      { vn: "Bạn đã từng ăn phở chưa?", options: ["Have you ever tried pho?", "Have you ever ate pho?", "You ever ate pho already?"], why: "Have + V3 (tried, eaten), không phải V2 (ate)." },
+      { vn: "Mình ăn sáng rồi.", options: ["I've already had breakfast.", "I eat breakfast already.", "I already eating breakfast."], why: "have already + V3. Bữa ăn thì dùng have hoặc eat." }
+    ]
+  },
+  {
+    id: "l5", title: "Phản xạ giao tiếp: trả lời như người bản xứ",
+    rule: ["Nhiều câu đáp trong giao tiếp là khuôn cố định. Dịch từ tiếng Việt sẽ ra những câu nghe lạ, thậm chí sai nghĩa.",
+           "Cách nghĩ: với câu hỏi dạng phủ định, trả lời theo sự thật (thích thì Yes, không thích thì No), không theo việc mình đồng ý với người hỏi."],
+    items: [
+      { vn: "\"Bạn không thích à?\" – \"Ừ, không thích.\"", wrong: "Don't you like it? – Yes, I don't.", right: "Don't you like it? – No, I don't.", why: "Tiếng Việt \"Ừ\" = đồng ý với người hỏi. Tiếng Anh Yes/No = sự thật về bạn." },
+      { vn: "Đáp lại \"How are you?\"", wrong: "I'm fine, thank you. And you?", right: "Pretty good, you?", why: "Câu sách giáo khoa nghe cứng. Nói tự nhiên: Not bad, how about you? / Good, thanks!" },
+      { vn: "Bạn làm nghề gì?", wrong: "What is your job?", right: "What do you do?", why: "What is your job? nghe như đang điền form." },
+      { vn: "Mình chán quá", wrong: "I'm boring.", right: "I'm bored.", why: "boring = mình gây chán cho người khác. bored = mình cảm thấy chán." },
+      { vn: "Không có gì (đáp lời cảm ơn)", wrong: "Nothing.", right: "No problem! / You're welcome.", why: "Nothing nghĩa là \"không có thứ gì\", không phải lời đáp cảm ơn." },
+      { vn: "Cho mình một ly cà phê", wrong: "Give me a coffee.", right: "Could I get a coffee, please?", why: "Give me... nghe cộc lốc. Hoặc: Can I have a coffee?" },
+      { vn: "Mình cũng không (đáp câu phủ định)", wrong: "I don't like it. – Me too.", right: "I don't like it. – Me neither.", why: "Đồng ý với câu phủ định thì dùng Me neither." },
+      { vn: "Hẹn gặp lại (chia tay đồng nghiệp)", wrong: "See you again!", right: "See you! / See you tomorrow!", why: "See you again nghe như lâu nữa mới gặp. Hằng ngày chỉ cần See you." }
+    ],
+    quiz: [
+      { vn: "\"Isn't this your bag?\" (Đúng là túi của bạn.)", options: ["Yes, it is.", "No, it is.", "Yes, it isn't."], why: "Là túi của bạn, nên Yes, it is." },
+      { vn: "Ai đó nói \"Thanks a lot!\". Bạn đáp:", options: ["No problem!", "Nothing.", "Don't thank."], why: "No problem / You're welcome / Anytime." },
+      { vn: "\"I don't eat seafood.\" Bạn cũng không ăn. Bạn đáp:", options: ["Me neither.", "Me too.", "Me also not."], why: "Đồng ý với câu phủ định: Me neither." },
+      { vn: "Gọi trà sữa ở quán:", options: ["Could I get a milk tea, please?", "Give me a milk tea.", "I want milk tea now."], why: "Could I get / Can I have ... please nghe lịch sự và tự nhiên." },
+      { vn: "Chán ghê, chẳng có gì làm.", options: ["I'm so bored. There's nothing to do.", "I'm so boring. Nothing to do.", "I'm so boredom, nothing to do."], why: "Cảm giác của mình thì dùng bored." }
+    ]
+  },
+  {
+    id: "l6", title: "Một từ tiếng Việt, nhiều từ tiếng Anh",
+    rule: ["\"Mượn, nhớ, nói, xem, vui\"... mỗi từ tiếng Việt ứng với nhiều từ tiếng Anh khác nhau.",
+           "Cách nghĩ: trước khi nói, hỏi \"ý mình thật sự là gì?\" Mình nhận hay cho? Không quên hay nhung nhớ? Nói ra hay nói với ai?"],
+    items: [
+      { vn: "Cho mình mượn cây bút", wrong: "Can you borrow me your pen?", right: "Can you lend me your pen?", why: "borrow = mình mượn (nhận). lend = cho mượn. Hoặc: Can I borrow your pen?" },
+      { vn: "Mình lỡ chuyến xe buýt", wrong: "I lost the bus.", right: "I missed the bus.", why: "lose = làm mất, thua. miss = lỡ, trễ." },
+      { vn: "Anh nhớ em (nhung nhớ)", wrong: "I remember you.", right: "I miss you.", why: "remember = không quên. miss = nhớ nhung một người vắng mặt." },
+      { vn: "Nhắc mình gọi cho cô ấy", wrong: "Remember me to call her.", right: "Remind me to call her.", why: "remind someone to do something = nhắc ai làm gì." },
+      { vn: "Cô ấy nói với tôi sự thật", wrong: "She said me the truth.", right: "She told me the truth.", why: "say something. tell someone something." },
+      { vn: "Xem TV / xem phim", wrong: "look TV / see a film on TV", right: "watch TV / watch a movie", why: "watch = xem thứ đang chuyển động, trong thời gian dài. Đi rạp thì nói see a movie cũng được." },
+      { vn: "Chuyến đi vui lắm", wrong: "The trip was so funny.", right: "The trip was so fun.", why: "fun = vui, thú vị. funny = buồn cười." }
+    ],
+    quiz: [
+      { vn: "Cho mình mượn cái sạc được không?", options: ["Can I borrow your charger?", "Can you borrow me your charger?", "Can you lend your charger me?"], why: "Mình là người nhận, nên dùng borrow. Hoặc: Can you lend me your charger?" },
+      { vn: "Mình lỡ chuyến bay rồi.", options: ["I missed my flight.", "I lost my flight.", "I failed my flight."], why: "miss = lỡ." },
+      { vn: "Nhắc mình mua sữa nhé.", options: ["Remind me to buy milk.", "Remember me to buy milk.", "Remain me to buy milk."], why: "remind someone to do something." },
+      { vn: "Buổi tiệc vui lắm.", options: ["The party was really fun.", "The party was really funny.", "The party was really happy."], why: "fun = vui. funny = hài hước, buồn cười." },
+      { vn: "Anh ấy nói với mình là anh ấy bận.", options: ["He told me he was busy.", "He said me he was busy.", "He talked me he was busy."], why: "tell + người. Hoặc: He said he was busy." }
+    ]
+  }
+];
+
+const HABITS = [
+  { t: "Tự thuật trong đầu", d: "Mô tả việc mình đang làm bằng những câu tiếng Anh ngắn. Đừng cần hay, chỉ cần đúng thì và đúng cụm.", ex: "I'm making coffee. I'm running late. I need to reply to that email." },
+  { t: "Học theo cụm, không học từ lẻ", d: "Mỗi từ mới, ghi cả cụm hay đi với nó. Đó chính là bài 1 và bài 2.", ex: "Không ghi \"mistake = lỗi\". Ghi \"make a mistake\"." },
+  { t: "Bí từ thì nói đơn giản hơn", d: "Khi không biết dịch một từ tiếng Việt, đừng dịch. Tả ý đó bằng từ mình đã biết.", ex: "Quên từ \"postpone\"? Nói: We moved the meeting to next week." },
+  { t: "Tra từ điển Anh – Anh", d: "Dùng Cambridge hoặc Oxford Learner's. Đọc câu ví dụ và nhãn [T] / [I] để biết động từ có cần giới từ không.", ex: "discuss [T] → discuss something." },
+  { t: "Shadowing 5 phút mỗi ngày", d: "Nghe một đoạn hội thoại ngắn rồi nói đuổi theo gần như cùng lúc. Bắt chước cả ngữ điệu, không chỉ từ.", ex: "Nguồn gợi ý: podcast hội thoại, phim bạn thích có phụ đề tiếng Anh." },
+  { t: "Ghi sổ lỗi của riêng mình", d: "Mỗi lần phát hiện mình nói sai, ghi lại cặp sai → đúng như các thẻ trong giáo trình này. Ôn lại cuối tuần.", ex: "discuss about → discuss" }
+];
+
+const PLAN = [
+  ["Ngày 1–6", "Mỗi ngày một bài: đọc các thẻ, bấm nghe câu đúng, rồi làm bài kiểm tra.", "15 phút"],
+  ["Ngày 7", "Ôn tập tổng hợp. Ghi lại những câu làm sai vào sổ lỗi.", "10 phút"],
+  ["Ngày 8–13", "Học lại từng bài, bật \"Tự kiểm tra\": tự nói câu đúng thành tiếng trước khi xem đáp án.", "10 phút"],
+  ["Ngày 14", "Ôn tập tổng hợp lần hai. Mục tiêu 9/10 trở lên.", "10 phút"],
+  ["Mỗi ngày", "Tự thuật trong đầu và shadowing (thói quen 1 và 5).", "5–10 phút"]
+];
+
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+let progress = store.get("tie-progress", {});
+let view = store.get("tie-view", "l1");
+let selfTest = store.get("tie-selftest", false);
+let quiz = null;
+
+const canSpeak = typeof window.speechSynthesis !== "undefined";
+const SPK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/></svg>';
+
+function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function speak(t) {
+  if (!canSpeak) return;
+  try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = "en-US"; u.rate = 0.92; speechSynthesis.speak(u); } catch (e) {}
+}
+function speakBtn(t) { return canSpeak ? `<button class="speak" type="button" data-say="${esc(t)}" aria-label="Nghe: ${esc(t)}" title="Nghe">${SPK}</button>` : ""; }
+
+function renderNav() {
+  const nav = document.getElementById("nav");
+  let h = LESSONS.map((l, i) => {
+    const done = progress[l.id] != null;
+    return `<button class="chip" type="button" data-view="${l.id}" aria-current="${view === l.id}"><span class="num">${i + 1}</span>${esc(l.title.split(":")[0])}${done ? '<span class="done" title="Đã làm bài kiểm tra"></span>' : ""}</button>`;
+  }).join("");
+  h += `<button class="chip alt" type="button" data-view="review" aria-current="${view === "review"}">Ôn tập tổng hợp${progress.review != null ? '<span class="done"></span>' : ""}</button>`;
+  h += `<button class="chip alt" type="button" data-view="habits" aria-current="${view === "habits"}">Cách luyện mỗi ngày</button>`;
+  nav.innerHTML = h;
+}
+
+function cardHTML(it, idx) {
+  return `<article class="card${selfTest ? " masked" : ""}" data-card="${idx}">
+    <p class="vn">Ý bạn muốn nói: <b>${esc(it.vn)}</b></p>
+    <div class="line wrong"><span class="mark" aria-label="Dịch từng chữ">✕</span><s>${esc(it.wrong)}</s><span></span></div>
+    <button class="reveal-btn" type="button" data-reveal="${idx}">Xem cách nói tự nhiên</button>
+    <div class="line right reveal"><span class="mark" aria-label="Tự nhiên">✓</span><span class="txt"><span class="hl">${esc(it.right)}</span></span>${speakBtn(it.right.split(" / ")[0])}</div>
+    <p class="why reveal">${esc(it.why)}</p>
+  </article>`;
+}
+
+function renderLesson(l) {
+  const i = LESSONS.indexOf(l);
+  const prev = LESSONS[i - 1], next = LESSONS[i + 1];
+  const best = progress[l.id];
+  return `<section class="lesson-head">
+      <p class="kicker">Bài ${i + 1} / ${LESSONS.length}</p>
+      <h2>${esc(l.title)}</h2>
+      <div class="rule"><p class="label">Quy tắc tư duy</p>${l.rule.map(p => `<p>${esc(p)}</p>`).join("")}</div>
+    </section>
+    <div class="toolbar">
+      <h3>Dịch từng chữ và cách nói tự nhiên</h3>
+      <label class="switch"><input type="checkbox" id="selftest" ${selfTest ? "checked" : ""}> Tự kiểm tra (ẩn đáp án)</label>
+    </div>
+    <div class="cards">${l.items.map(cardHTML).join("")}</div>
+    <h3>Kiểm tra nhanh${best != null ? ` <span style="font-weight:500;color:var(--muted);font-size:15px">· điểm cao nhất ${best}/${l.quiz.length}</span>` : ""}</h3>
+    <div class="quiz" id="quiz"></div>
+    <div class="pager">
+      ${prev ? `<button class="btn ghost" type="button" data-view="${prev.id}">← Bài ${i}</button>` : "<span></span>"}
+      ${next ? `<button class="btn ghost" type="button" data-view="${next.id}">Bài ${i + 2} →</button>` : `<button class="btn ghost" type="button" data-view="review">Ôn tập tổng hợp →</button>`}
+    </div>`;
+}
+
+function renderReview() {
+  const best = progress.review;
+  return `<section class="lesson-head">
+      <p class="kicker">Ôn tập</p>
+      <h2>Ôn tập tổng hợp</h2>
+      <div class="rule"><p class="label">Cách làm</p><p>10 câu lấy ngẫu nhiên từ cả 6 bài. Đọc câu tiếng Việt, tự nói câu tiếng Anh thành tiếng trước, rồi mới chọn đáp án.</p></div>
+    </section>
+    <h3>10 câu ngẫu nhiên${best != null ? ` <span style="font-weight:500;color:var(--muted);font-size:15px">· điểm cao nhất ${best}/10</span>` : ""}</h3>
+    <div class="quiz" id="quiz"></div>`;
+}
+
+function renderHabits() {
+  return `<section class="lesson-head">
+      <p class="kicker">Luyện tập</p>
+      <h2>Cách luyện nghĩ bằng tiếng Anh mỗi ngày</h2>
+      <div class="rule"><p class="label">Ý chính</p><p>Nghĩ bằng tiếng Anh là một thói quen, không phải kiến thức. Mỗi ngày một chút, đều đặn, sẽ hiệu quả hơn học dồn.</p></div>
+    </section>
+    <h3>6 thói quen</h3>
+    <div class="habits">${HABITS.map(h => `<div class="habit"><div><h4>${esc(h.t)}</h4><p>${esc(h.d)}</p><p class="ex"><span class="hl">${esc(h.ex)}</span></p></div></div>`).join("")}</div>
+    <h3>Lộ trình 2 tuần</h3>
+    <div class="plan-wrap"><table class="plan"><thead><tr><th>Khi nào</th><th>Làm gì</th><th>Thời gian</th></tr></thead>
+    <tbody>${PLAN.map(r => `<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td></tr>`).join("")}</tbody></table></div>
+    <div class="pager"><span></span><button class="btn" type="button" data-view="l1">Bắt đầu Bài 1 →</button></div>`;
+}
+
+function startQuiz(key, qs) {
+  quiz = { key, i: 0, score: 0, picked: null, qs: qs.map(q => ({ ...q, order: shuffle(q.options.map((_, k) => k)) })) };
+  renderQuiz();
+}
+
+function renderQuiz() {
+  const box = document.getElementById("quiz");
+  if (!box || !quiz) return;
+  const n = quiz.qs.length;
+  if (quiz.i >= n) {
+    const s = quiz.score;
+    const msg = s === n ? "Tuyệt vời. Bạn đã nghĩ đúng kiểu tiếng Anh ở tất cả các câu." : s >= n * 0.6 ? "Khá tốt. Xem lại các thẻ ở những câu làm sai rồi thử lại." : "Đọc lại các thẻ phía trên, bật \"Tự kiểm tra\" để luyện, rồi làm lại.";
+    box.innerHTML = `<div class="result"><div class="score">${s}/${n}</div><p>${msg}</p>
+      <div class="actions"><button class="btn" type="button" data-act="retry">Làm lại</button></div></div>`;
+    return;
+  }
+  const q = quiz.qs[quiz.i];
+  const answered = quiz.picked != null;
+  const opts = q.order.map(k => {
+    let cls = "opt";
+    if (answered && k === 0) cls += " correct";
+    if (answered && k === quiz.picked && k !== 0) cls += " picked-wrong";
+    return `<button class="${cls}" type="button" data-opt="${k}" ${answered ? "disabled" : ""}>${esc(q.options[k])}</button>`;
+  }).join("");
+  const fb = answered ? `<div class="feedback"><span class="verdict ${quiz.picked === 0 ? "ok" : "no"}">${quiz.picked === 0 ? "Chính xác." : "Chưa đúng."}</span> ${esc(q.why)} ${speakBtn(q.options[0])}</div>
+      <div class="actions"><button class="btn" type="button" data-act="next">${quiz.i + 1 < n ? "Câu tiếp theo" : "Xem kết quả"}</button></div>` : "";
+  box.innerHTML = `<div class="qmeta"><span>Câu ${quiz.i + 1} / ${n}${q.from ? " · " + esc(q.from) : ""}</span><span>Đúng: ${quiz.score}</span></div>
+    <div class="bar"><i style="width:${(quiz.i / n) * 100}%"></i></div>
+    <p class="qprompt">Câu nào tự nhiên nhất?</p>
+    <p class="qvn">${esc(q.vn)}</p>
+    <div class="opts">${opts}</div>${fb}`;
+}
+
+function newQuizFor(v) {
+  if (v === "review") {
+    const all = LESSONS.flatMap((l, i) => l.quiz.map(q => ({ ...q, from: "Bài " + (i + 1) })));
+    startQuiz("review", shuffle(all).slice(0, 10));
+  } else {
+    const l = LESSONS.find(x => x.id === v);
+    if (l) startQuiz(l.id, l.quiz);
+  }
+}
+
+function render(scrollTop) {
+  renderNav();
+  const main = document.getElementById("view");
+  const l = LESSONS.find(x => x.id === view);
+  if (l) main.innerHTML = renderLesson(l);
+  else if (view === "review") main.innerHTML = renderReview();
+  else main.innerHTML = renderHabits();
+  if (view !== "habits") newQuizFor(view); else quiz = null;
+  if (scrollTop) document.getElementById("nav").scrollIntoView({ block: "start" });
+}
+
+document.addEventListener("click", e => {
+  const t = e.target.closest("button");
+  if (!t) return;
+  if (t.dataset.view) {
+    view = t.dataset.view; store.set("tie-view", view);
+    render(t.closest(".pager") != null);
+    return;
+  }
+  if (t.dataset.say) { speak(t.dataset.say); return; }
+  if (t.dataset.reveal != null) { t.closest(".card").classList.remove("masked"); return; }
+  if (t.dataset.opt != null && quiz && quiz.picked == null) {
+    quiz.picked = Number(t.dataset.opt);
+    if (quiz.picked === 0) quiz.score++;
+    renderQuiz(); return;
+  }
+  if (t.dataset.act === "next" && quiz) {
+    quiz.i++; quiz.picked = null;
+    if (quiz.i >= quiz.qs.length) {
+      const prevBest = progress[quiz.key];
+      if (prevBest == null || quiz.score > prevBest) { progress[quiz.key] = quiz.score; store.set("tie-progress", progress); }
+      renderNav();
+    }
+    renderQuiz(); return;
+  }
+  if (t.dataset.act === "retry") { newQuizFor(quiz ? quiz.key : view); return; }
+});
+
+document.addEventListener("change", e => {
+  if (e.target.id === "selftest") {
+    selfTest = e.target.checked; store.set("tie-selftest", selfTest);
+    document.querySelectorAll(".card").forEach(c => c.classList.toggle("masked", selfTest));
+  }
+});
+
+if (!LESSONS.some(l => l.id === view) && view !== "review" && view !== "habits") view = "l1";
+render(false);
+</script>
+
+</body></html>
