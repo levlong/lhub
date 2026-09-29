@@ -152,8 +152,9 @@ function buildCourses(knowledgeIds) {
       const day = readJSON(file);
       validateDay(day, file);
       if (day.course !== id) fail(`"course" trong ${path.relative(ROOT, file)} phải là "${id}"`);
+      // Một concept có thể chưa có note: /today giới thiệu concept trước, /done mới tạo note.
       for (const c of day.concepts) {
-        if (!knowledgeIds.has(c)) fail(`concept "${c}" trong ${path.relative(ROOT, file)} không có note trong knowledge/`);
+        if (!knowledgeIds.has(c)) console.warn(`Cảnh báo: concept "${c}" trong ${path.relative(ROOT, file)} chưa có note trong knowledge/ (sẽ được /done tạo).`);
       }
       writeFileSync(path.join(outDir, f), JSON.stringify(day, null, 2));
       days.push({ day: day.day, file: f, date: day.date, title: day.title, est_minutes: day.est_minutes, status: statusByDay.get(day.day) ?? "todo" });
