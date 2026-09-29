@@ -3,30 +3,30 @@ name: done
 description: Ghi nhận kết quả quiz đã làm trên web app (dán dòng JSON từ nút "Copy kết quả"), cập nhật knowledge, roadmap và journal. Dùng ngay sau khi làm xong một bài trên điện thoại.
 ---
 
-Đọc `docs/DESIGN.md` mục 2, 5.1, 5.3 nếu chưa đọc trong phiên này.
+Đọc `docs/DESIGN.md` mục 2, 5.1, 5.3, 5.5 nếu chưa đọc trong phiên này.
 
-Tham số: `<kết quả>` — người dùng dán 1 dòng JSON theo schema mục 5.3, dạng:
-`{"ts":"...","course":"...","day":N,"score":S,"total":T,"wrong":[{"q":"...","picked":"...","concept":"..."}]}`
+Tham số: `<kết quả>` — người dùng dán 1 dòng JSON theo schema mục 5.3.
+
+Toàn bộ sổ sách (chống dán trùng, tính SRS, ghi journal, cập nhật roadmap) nằm ở `scripts/record-attempt.mjs`. Việc của bạn ở đây chỉ là **viết nội dung** (note knowledge mới, mục "Hay nhầm") và gọi script đúng lúc.
 
 ## Các bước
 
-1. **Parse** dòng JSON. Nếu không parse được hoặc thiếu field (`ts`, `course`, `day`, `score`, `total`, `wrong`), hỏi người dùng dán lại nguyên dòng từ nút "Copy kết quả".
+1. **Chạy script** với đúng dòng JSON người dùng dán:
+   ```
+   node scripts/record-attempt.mjs '<json>'
+   ```
+   Đọc kết quả JSON in ra ở stdout (thành công) hoặc stderr (lỗi, exit code 1).
 
-2. **Append** nguyên dòng vào `journal/attempts.jsonl` (thêm dòng mới ở cuối file). Không sửa, không xoá bất kỳ dòng nào đã có (nguyên tắc 3: append-only).
+2. **Xử lý theo kết quả**:
+   - `{"ok":true,"duplicate":true,...}` → kết quả này đã ghi nhận trước đó rồi. Báo người dùng và **dừng lại**, không làm gì thêm (không build, không commit).
+   - Lỗi có `missingConcepts: [...]` → với mỗi concept trong danh sách, viết **note mới** `knowledge/<concept-id>.md` theo schema 5.1: `id`, `title`, `courses: [<course>]`, `source` (trỏ mã syllabus trong `sources/<course>/syllabus.md`), `status: new`, `learned: null`, `next_review: null`, `interval: 0`, `mistakes: 0`, `tags` phù hợp, cùng phần thân — **Tóm tắt**, **Ví dụ** (ưu tiên ví dụ công việc thật của người dùng), **Hay nhầm** (nếu concept đó có mặt trong `wrong[]` của kết quả — dựa vào `picked`), **Liên quan** (`[[wikilink]]` tới note gần nghĩa nếu có). Đọc `courses/<course>/days/day-NN.json` để biết đúng nội dung bài đã học. Sau khi tạo xong tất cả note còn thiếu, **chạy lại bước 1** với cùng dòng JSON.
+   - Lỗi khác (JSON sai schema, không tìm thấy course/day...) → báo lỗi cho người dùng, hỏi dán lại đúng dòng "Copy kết quả".
+   - `{"ok":true,"duplicate":false,"updatedConcepts":[...],...}` → thành công, sang bước 3.
 
-3. **Đọc bài đã học**: `courses/<course>/days/day-NN.json` (hoặc file `review-YYYY-MM-DD.json` nếu là bài ôn) tương ứng với `day` trong kết quả, để lấy danh sách `concepts` đầy đủ và nội dung quiz.
+3. **Bổ sung nội dung** cho các concept trả lời sai (`correct:false` trong `updatedConcepts`): mở `knowledge/<concept-id>.md`, cập nhật mục "Hay nhầm" mô tả đúng lỗi vừa mắc (dựa vào `picked` trong kết quả gốc). Chỉ sửa phần thân (prose) — **không** sửa tay các field mà script đã ghi (`interval`, `status`, `mistakes`, `next_review`, `learned`, `courses`).
 
-4. **Cập nhật từng note trong `knowledge/`** cho mỗi id trong `concepts`:
-   - Tính đúng/sai: một concept coi là **sai** nếu có ít nhất 1 mục trong `wrong[]` với `concept` trùng id đó; ngược lại là **đúng**.
-   - Nếu note `knowledge/<concept-id>.md` **chưa tồn tại**: tạo mới theo schema 5.1 — `id`, `title` (suy từ tên khái niệm), `courses: [<course>]`, `source` (trỏ mã syllabus tương ứng trong `sources/<course>/syllabus.md`), `status: learning`, `learned: <ts, dạng YYYY-MM-DD>`, `tags` phù hợp. Viết **Tóm tắt**, **Ví dụ** (ưu tiên ví dụ công việc thật của người dùng), **Hay nhầm** (nếu sai, dựa trên `picked` trong `wrong[]`), **Liên quan** (`[[wikilink]]` tới note gần nghĩa nếu có).
-   - Nếu note **đã tồn tại**: thêm `<course>` vào mảng `courses` nếu chưa có; không tạo note trùng.
-   - **Nếu đúng**: interval đi theo chuỗi `1 → 3 → 7 → 14 → 30` (lấy bước kế tiếp trong chuỗi so với interval hiện tại; nếu đã ở 30 thì giữ 30). `next_review = hôm nay + interval ngày`. Nếu interval vừa đạt 30, đặt `status: mastered`; ngược lại `status: learning`.
-   - **Nếu sai**: `interval: 1`, `next_review = hôm nay + 1 ngày`, `mistakes += 1`, `status: learning` (kể cả nếu trước đó là `mastered`). Thêm hoặc cập nhật mục "Hay nhầm" trong note, mô tả đúng lỗi vừa mắc (dựa vào `picked`).
+4. Nếu người dùng có ghi chú thêm trong yêu cầu (ví dụ nhận xét về bài học), nối thêm 1 dòng vào cuối `journal/<YYYY-MM-DD theo giờ VN>.md` mà script vừa ghi.
 
-5. **Ghi `journal/YYYY-MM-DD.md`** (tạo mới nếu ngày hôm nay chưa có, nối thêm nếu đã có): tên khoá, ngày, tên bài, điểm số, danh sách câu sai (id + concept), ghi chú của người dùng nếu họ có nói gì thêm trong yêu cầu.
+5. Chạy `node scripts/build.mjs`. **Commit + push lên nhánh `dep`**: `learn(<course>): day NN – done, score S/T`.
 
-6. **Cập nhật `courses/<course>/roadmap.md`**: đổi trạng thái hàng ứng với `day` từ `todo`/`review` thành `done` (ghi nhận đã học, bất kể điểm cao hay thấp — việc đề xuất học lại khi điểm thấp do `/today` xử lý ở lần chạy sau, dựa vào `attempts.jsonl`).
-
-7. Chạy `node scripts/build.mjs`. **Commit + push lên nhánh `dep`** (nội dung học hằng ngày lên web ngay, xem README mục "Nhánh git"): `learn(<course>): day NN – done, score S/T`.
-
-8. Trả lời ngắn: điểm số, số khái niệm đã cập nhật, nếu điểm dưới 60% thì nhắc là `/today` lần sau sẽ đề xuất ôn lại.
+6. Trả lời ngắn: điểm số, số khái niệm đã cập nhật, nếu điểm dưới 60% thì nhắc là `/today` lần sau sẽ đề xuất ôn lại (script `next-day.mjs` tự bỏ qua các lần làm bài ôn tập khi xét điểm thấp).
